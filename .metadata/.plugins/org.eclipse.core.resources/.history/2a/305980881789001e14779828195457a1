@@ -1,0 +1,79 @@
+package com.devicethread.tools.features;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import com.devicethread.tools.features.models.locks.CodeParser;
+import com.devicethread.tools.utils.LockCodeConstants;
+import com.devicethread.tools.utils.LockCodeUtils;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+
+public class GuestCodeRepositories {
+
+	
+
+
+	public CodeParser getLockCodeDetails(String deviceId, String token) {
+		StringBuilder response=new GuestCodeService().getLockCodeDetails(deviceId, token);
+		if(response!=null)
+		{
+			Gson gson = new Gson();
+
+            // Parse the JSON string into your Java class
+            CodeParser codeInfo = gson.fromJson(response.toString(), CodeParser.class);
+            return codeInfo;
+		}
+		else
+		{
+			return null;
+		}
+		
+	}
+	
+	public String cleanLockCodeDetails(String deviceId,String index, String token) {
+		
+		
+		StringBuilder response=new GuestCodeService().cleanLockCodes(deviceId,index, token);
+		return response.toString();
+		
+	}
+	
+	public void setCodesForDevices(String [] codes,JsonArray []deviceIds,int totalCodeCount)
+	{
+	
+		for(Object deviceId:deviceIds)
+		{
+		StringBuilder response=new GuestCodeService().getLockCodeDetails(deviceId.toString(), LockCodeConstants.token);
+		if(response!=null)
+		{
+			Gson gson = new Gson();
+
+            // Parse the JSON string into your Java class
+            CodeParser codeInfo = gson.fromJson(response.toString(), CodeParser.class);
+            String[] indices = new LockCodeUtils().getAllLockCodeIndices(codeInfo.getLockCodes().getValue());
+            System.out.println(indices.toString());
+            for (int i = 1; i <= totalCodeCount; i++) {
+				boolean exist = false;
+ 
+				for (int j = 0; j < indices.length; j++) {
+					if (i == Integer.parseInt(indices[j].trim())) {
+ 
+						exist = true;
+ 
+					}
+				}
+				if(!exist)
+				{
+					
+				}
+            }
+            
+		}
+		}
+	}
+}

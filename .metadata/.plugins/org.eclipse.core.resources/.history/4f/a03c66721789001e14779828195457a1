@@ -1,0 +1,35 @@
+package com.devicethread.tools.features;
+
+import com.devicethread.tools.features.models.locks.CodeParser;
+import com.google.gson.Gson;
+
+public class GuestCodeRepositories {
+
+	
+
+
+	public CodeParser getLockCodeDetails(String deviceId, String token) {
+		StringBuilder response=new GuestCodeService().getLockCodeDetails(deviceId, token);
+		if(response!=null)
+		{
+			Gson gson = new Gson();
+
+            // Parse the JSON string into your Java class
+            CodeParser codeInfo = gson.fromJson(response.toString(), CodeParser.class);
+            return codeInfo;
+		}
+		else
+		{
+			return null;
+		}
+		
+	}
+	
+	public String cleanLockCodeDetails(String deviceId,String index, String token) {
+		
+		
+		StringBuilder response=new GuestCodeService().cleanLockCodes(deviceId,index, token);
+		return response.toString();
+		
+	}
+}

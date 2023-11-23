@@ -1,0 +1,58 @@
+package com.devicethread.tools.utils;
+
+public class LockCodeConstants {
+
+	public static String mastercodes[] = { "code_6441",
+			  "code_4408",
+			  "code_9338",
+			  "code_9795",
+			  "code_1178",
+			  "code_8007",
+			  "code_4708",
+			  "code_8385",
+			  "code_1218",
+			  "code_9790",
+			  "code_7490",
+			  "code_5306",
+			  "code_4017",
+			  "code_3033",
+			  "code_3913",
+			  "code_9151",
+			  "code_1190",
+			  "code_0408",
+			  "code_4574",
+			  "code_4571",
+			  "code_3935",
+			  "code_4273",
+			  "code_5116",
+			  "code_2374",
+			  "code_4049",
+			  "code_6469",
+			  "code_3885",
+			  "code_2118",
+			  "code_7062",
+			  "code_2372",
+			  "code_6254",
+			  "code_9873",
+			  "code_3235",
+			  "code_3491",
+			  "code_1620",
+			  "code_7619",
+			  "code_8265",
+			  "code_2129",
+			  "code_0698",
+			  "code_2098",
+			  "code_6794",
+			  "code_4621",
+			  "code_2116",
+			  "code_8751",
+			  "code_7928",
+			  "code_0839" };
+	public static String staffCodes[] = { "code_8095", "code_5957", "code_4893", "code_2818", "code_9749"};
+
+	public static String jsonPatPath = "C:\\Users\\SSC\\eclipse_tools\\tools\\src\\main\\java\\com\\devicethread\\tools\\utils\\PAT.json";
+	public static String token = "626523db-cbb4-4f3a-87a0-f48a1886cbde";
+	public static String codeToExclude[] = { "241", "240", "242","243" };
+
+}
+

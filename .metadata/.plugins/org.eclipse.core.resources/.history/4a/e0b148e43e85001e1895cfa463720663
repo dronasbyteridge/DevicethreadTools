@@ -1,0 +1,50 @@
+package com.devicethread.tools;
+
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
+import org.json.JSONObject;
+
+import com.devicethread.tools.features.GuestCodeRepositories;
+import com.devicethread.tools.features.models.locks.CodeParser;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+/**
+ * Hello world!
+ *
+ */
+public class Main 
+{
+	String token = "626523db-cbb4-4f3a-87a0-f48a1886cbde";
+    public static void main( String[] args ) {
+
+    	System.out.println("Hello");
+    	new Main().getApi();
+    	
+    }
+    
+    public void getApi()
+    {
+    	String deviceId="df499a5a-c275-4228-860c-2c0747125c24";
+    	GuestCodeRepositories guestCodeRepositories=new GuestCodeRepositories();
+  
+    	CodeParser codeInfo=guestCodeRepositories.getLockCodeDetails(deviceId, token);
+             JSONObject jsonObject2 = new JSONObject(codeInfo.getLockCodes().getValue());
+             for (String key : jsonObject2.keySet()) {
+ 				if (key.matches("\\d+")) {
+
+ 					if (jsonObject2.get(key).toString().contains("code_")) {
+
+ 						System.out.print(" "+jsonObject2.get(key));
+ 					}
+
+ 				}
+ 			}
+        
+
+    }
+}

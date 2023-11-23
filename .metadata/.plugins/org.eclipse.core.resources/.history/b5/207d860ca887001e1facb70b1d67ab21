@@ -1,0 +1,60 @@
+package com.devicethread.tools;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import com.devicethread.tools.features.GuestCodeReport;
+import com.devicethread.tools.features.GuestCodeRepositories;
+import com.devicethread.tools.features.models.locks.CodeParser;
+import com.devicethread.tools.utils.LockCodeConstants;
+import com.devicethread.tools.utils.LockCodeUtils;
+
+public class Main {
+
+	public static void main(String[] args) {
+
+		// 0 generate guest code report
+		// 1 generate staff code report
+		// 2 generate master code report
+		// new GuestCodeReport().generateGuestCodeReport(1);
+
+		List<Map<String, String[]>> data = new ArrayList<Map<String, String[]>>();
+		String[] codes = { "1009", "6726", "4774", "0662", "7691", "6088" };
+
+		Map<String, String[]> deviceData = new HashMap<String, String[]>();
+		deviceData.put("df499a5a-c275-4228-860c-2c0747125c24", codes);
+
+		data.add(deviceData);
+	//	new GuestCodeReport().cleanDevices(data);
+		new Main().createInsertQuery();
+
+	}
+
+	public void createInsertQuery() {
+		String deviceIds[] = {"df499a5a-c275-4228-860c-2c0747125c24",    "5ee17c19-b21b-4d75-9c7a-93a49efd5d49"};
+		String staffCodes[] = {"5783" , "4853","2707"};
+		GuestCodeRepositories guestCodeRepositories = new GuestCodeRepositories();
+		for (String deviceId : deviceIds) {
+			System.out.println(deviceId);
+			CodeParser codeInfo = guestCodeRepositories.getLockCodeDetails(deviceId, LockCodeConstants.token);
+			String[] indices = new LockCodeUtils().getLockCodeIndices(codeInfo.getLockCodes().getValue());
+			String[] codeValue = new LockCodeUtils().getLockCodeLabels(codeInfo.getLockCodes().getValue());
+			for (int j = 0; j < codeValue.length; j++) {
+				if (codeValue[j].trim().split("_").length > 1) {
+					String code = codeValue[j].trim().split("_")[1].trim();
+					if (ArrayUtils.contains(staffCodes, code.trim())) {
+
+						System.out.println("Code:"+code+":index:"+indices[j]);
+						
+					}
+				}
+
+			}
+		}
+	}
+
+}

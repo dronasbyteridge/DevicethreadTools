@@ -1,0 +1,214 @@
+package com.devicethread.tools;
+
+import java.io.FileReader;
+import java.util.Arrays;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SetLockCodesForDevicesUsingXLSheetData {
+
+	public static void main(String[] args) {
+		SetLockCodesForDevicesUsingXLSheetData obj = new SetLockCodesForDevicesUsingXLSheetData();
+		try {
+			obj.SetLockCodes();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Response response2 = RestAssured.given().accept(ContentType.JSON).contentType(ContentType.JSON)
+				.header("Authorization", "Bearer " + token).header("Cache-Control", "no-cache")
+				.pathParam("deviceId", deviceId).when()
+				.get("https://api.smartthings.com/v1/devices/{deviceId}/components/main/capabilities/lockCodes/status")
+				.then().statusCode(200).extract().response();
+
+	}
+
+	String dtauthloginkey;
+	String dtauthloginkey2;
+	String GKRCreatedResponse;
+	String keyDetails;
+	String code;
+	String codedelievered;
+	String smartthings_code1;
+	String smartthings_code2;
+	String Key_ID;
+	// String deviceId = "a044e317-4b0c-424d-9897-4e4fd475774f";
+	// String deviceId = "5ee17c19-b21b-4d75-9c7a-93a49efd5d49";
+	String propertyId = "";
+
+	String token = "626523db-cbb4-4f3a-87a0-f48a1886cbde";
+	// String token = "21c0977b-0667-4ebc-ae6f-f04435c384e1";
+
+	int index = 0;
+
+	List<String> header = Arrays.asList("DeviceId", "StaffCode", "MasterCode", "GuestCode");
+	List<List<List<String>>> sheetData;
+
+
+	@Test(priority = 0, enabled = true)
+	public void SetLockCodes() throws Throwable {
+		sheetData = new ArrayList<List<List<String>>>();
+		// Thread sleep(7000);
+		index = 0;
+		int staffCodeCount = 0;
+		int guestCodeCount = 0;
+		int masterCodeCount = 0;
+		String codesFound = "";
+		String mastercodes[] = { "code_1514", "code_5595", "code_1503", "code_7159", "code_8627", "code_9881",
+				"code_2238", "code_5069", "code_9342", "code_1266", "code_4557", "code_7858", "code_3405", "code_6010",
+				"code_0656", "code_9597", "code_8599", "code_1685", "code_6819", "code_4555", "code_4208", "code_3553",
+				"code_9726", "code_1784", "code_8000", "code_1392", "code_7680", "code_6894", "code_5340", "code_1829",
+				"code_2909", "code_0056", "code_3002", "code_2450", "code_2750", "code_6044", "code_5658", "code_6771",
+				"code_5935", "code_3109", "code_3778", "code_0404", "code_8626", "code_1717", "code_9227", "code_8852",
+				"code_5894", "code_9251", "code_2281", "code_3181", "code_1566", "code_8820", "code_6262", "code_5947",
+				"code_1182", "code_6275" };
+		String staffCodes[] = { "code_7441", "code_4853", "code_1425", "code_5783", "code_9609", "code_2707",
+				"code_7878", "code_2967", "code_7821", "code_5176", "code_7767" };
+
+		FileReader reader = new FileReader(
+				"C:\\\\Users\\\\SSC\\\\automation\\\\lock-api-automation\\\\lock-api-automation\\\\src\\\\test\\\\java\\\\Json\\\\PAT.json");
+		JSONObject jsonObject = new JSONObject(new JSONTokener(reader));
+
+		// Get the array of device IDs
+		JSONArray deviceIds = jsonObject.getJSONArray("deviceIds");
+
+		for (Object deviceId : deviceIds) {
+			List<List<String>> sheetRecords = new ArrayList<List<String>>();
+
+			staffCodeCount = 0;
+			guestCodeCount = 0;
+			masterCodeCount = 0;
+			codesFound = "";
+			index = 0;
+			// System.out.println("Processing Device ID: " + deviceId);
+
+			// System.out.println("token-->" + token);
+
+			Response response2 = RestAssured.given().accept(ContentType.JSON).contentType(ContentType.JSON)
+					.header("Authorization", "Bearer " + token).header("Cache-Control", "no-cache")
+					.pathParam("deviceId", deviceId).when()
+					.get("https://api.smartthings.com/v1/devices/{deviceId}/components/main/capabilities/lockCodes/status")
+					.then().statusCode(200).extract().response();
+
+			String DeviceCodes = response2.jsonPath().getString("lockCodes.value");
+			// System.out.println("DeviceCodes----->" + DeviceCodes);
+
+			JSONObject jsonObject2 = new JSONObject(DeviceCodes);
+			StringBuilder indices = new StringBuilder();
+
+			StringBuilder LockCodes = new StringBuilder();
+
+			for (String key : jsonObject2.keySet()) {
+				if (key.matches("\\d+")) {
+
+					if (jsonObject2.get(key).toString().contains("code_")) {
+
+						// System.out.println("key ->" + key);
+						if (!key.trim().equals("243")) {
+
+							indices.append(key).append(", ");
+							LockCodes.append(jsonObject2.get(key)).append(", ");
+						}
+					}
+
+				}
+			}
+
+			if (indices.length() > 0) {
+				indices.delete(indices.length() - 2, indices.length()); // Remove the trailing comma and space
+			}
+			String indexValues = indices.toString();
+
+			String s[] = indexValues.split(",");
+			String codeValue[] = LockCodes.toString().split(",");
+			// System.out.println("LockCodes-->" + LockCodes);
+
+			int x = 0;
+			// System.out.println("indexValues" + indexValues);
+
+			List<String> sheetRec = null;
+			for (int i = 0; i < codeValue.length; i++) {
+			//	System.out.println("Staff" + codeValue[i]);
+				sheetRec = new ArrayList<String>();
+				sheetRec.add(deviceId.toString());
+				// di.append(deviceId.toString());
+				// sheetRecords.add(deviceId.toString());
+				if (ArrayUtils.contains(staffCodes, codeValue[i].toString().trim())) {
+
+					staffCodeCount++;
+					sheetRec.add(codeValue[i].toString().trim());
+
+					// sheetRecords.add(codeValue[i].toString());
+				} else {
+					sheetRec.add(" ");
+
+				}
+				if (ArrayUtils.contains(mastercodes, codeValue[i].toString().trim())) {
+
+					masterCodeCount++;
+
+					sheetRec.add(codeValue[i].toString().trim());
+					// sheetRecords.add(codeValue[i].toString());
+				} else {
+					// sheetRecords.add("");
+					sheetRec.add(" ");
+				}
+
+				if (codeValue[i].trim().startsWith("code_")
+						&& !ArrayUtils.contains(mastercodes, codeValue[i].toString().trim())) {
+
+					guestCodeCount++;
+					String code = codeValue[i].trim().split("_")[1].trim();
+					String codeValues = codeValue[i].trim();
+					codesFound += code + ",";
+					String indexes = s[x].trim();
+					String query = "INSERT INTO public.\"LockCodes\"\r\n"
+							+ "			(\"deviceId\", code, \"lockCodeLabel\", \"lockCodeIndex\", \"propertyId\")\r\n"
+							+ "			VALUES(\'" + deviceId + "\',  \'" + code + "\', \'" + codeValues + "\', \'"
+							+ indexes + "\',  \'c3e56344-4f25-450d-8ef6-363705b278a7\');";
+
+					// System.out.println(query);
+					// sheetRecords.add(code.toString());
+
+					sheetRec.add(codeValue[i].toString().trim());
+				} else {
+					sheetRec.add(" ");
+				}
+				x++;
+				sheetRecords.add(sheetRec);
+			}
+
+			sheetRec.add(" ");
+			sheetRec.add(" ");
+			sheetRec.add(" ");
+			sheetRec.add(" ");
+			System.out.println("Device Id::::" + deviceId);
+			System.out.println("codes::::" + codesFound);
+
+			System.out.println("StaffCount::" + staffCodeCount);
+			System.out.println("MasterCodePresent::" + (masterCodeCount > 0));
+			System.out.println("GuestCodeCount::" + guestCodeCount);
+			System.out.println();
+			sheetData.add(sheetRecords);
+
+		}
+
+		System.out.println(sheetData.toString());
+		Utils utils = new Utils();
+		String fileNmae = System.currentTimeMillis() + "";
+		String sheetfilePath = "C:\\Users\\SSC\\" + fileNmae + ".csv";
+		 utils.generateCsv(sheetfilePath, header, sheetData);
+
+	}
+}
+//}

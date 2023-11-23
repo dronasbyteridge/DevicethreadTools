@@ -1,0 +1,98 @@
+package com.devicethread.tools.utils;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.json.JSONObject;
+
+public class LockCodeUtils {
+
+	
+	public String [] getLockCodeIndices(String lockCodeJson)
+	{
+		JSONObject jsonObject2 = new JSONObject(lockCodeJson);
+		StringBuilder indices = new StringBuilder();
+
+
+		for (String key : jsonObject2.keySet()) {
+			if (key.matches("\\d+")) {
+
+				if (jsonObject2.get(key).toString().contains("code_")) {
+
+					// System.out.println("key ->" + key);
+					if (!key.trim().equals("243")) {
+
+						indices.append(key).append(", ");
+						
+					}
+				}
+
+			}
+		}
+
+		if (indices.length() > 0) {
+			indices.delete(indices.length() - 2, indices.length()); // Remove the trailing comma and space
+		}
+		String indexValues = indices.toString();
+
+		String indexes[] = indexValues.split(",");
+		return indexes;
+		
+	}
+	
+	public String [] getLockCodeLabels(String lockCodeJson)
+	{
+		JSONObject jsonObject2 = new JSONObject(lockCodeJson);
+		StringBuilder labels = new StringBuilder();
+
+		
+		for (String key : jsonObject2.keySet()) {
+			if (key.matches("\\d+")) {
+
+				if (jsonObject2.get(key).toString().contains("code_")) {
+
+					// System.out.println("key ->" + key);
+					if (!key.trim().equals("243")) {
+
+						labels.append(jsonObject2.get(key)).append(", ");
+					}
+				}
+
+			}
+		}
+
+		
+		String codeLabelStr = labels.toString();
+		String codeLabels[] = codeLabelStr.toString().split(",");
+
+		return codeLabels;
+		
+	}
+	
+	public String [] getAllLockCodeIndices(String lockCodeJson)
+	{
+		JSONObject jsonObject2 = new JSONObject(lockCodeJson);
+		StringBuilder indices = new StringBuilder();
+
+
+		for (String key : jsonObject2.keySet()) {
+			if (key.matches("\\d+")) {
+
+						
+						if(!ArrayUtils.contains(LockCodeConstants.codeToExclude,key.trim()) && !key.isEmpty())
+						{
+
+						indices.append(key).append(", ");
+						}
+							
+			}
+		}
+
+		if (indices.length() > 0) {
+			indices.delete(indices.length() - 2, indices.length()); // Remove the trailing comma and space
+		}
+		String indexValues = indices.toString();
+
+		String indexes[] = indexValues.split(",");
+		return indexes;
+		
+	}
+}

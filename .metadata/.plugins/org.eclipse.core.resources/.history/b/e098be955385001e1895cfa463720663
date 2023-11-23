@@ -1,0 +1,122 @@
+package com.devicethread.tools.features;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import com.devicethread.tools.features.models.locks.CodeParser;
+import com.devicethread.tools.utils.CsvUtils;
+import com.devicethread.tools.utils.LockCodeConstants;
+import com.devicethread.tools.utils.LockCodeUtils;
+
+public class GuestCodeReport {
+	
+	public static void main(String [] args)
+	{
+		System.out.println("Hello");
+		new GuestCodeReport().generateGuestCodeReport(0);
+	}
+	
+	
+	
+	public void generateGuestCodeReport(int report)
+	{
+		
+    	GuestCodeRepositories guestCodeRepositories=new GuestCodeRepositories();
+  
+    	
+    	try {
+			FileReader reader = new FileReader(LockCodeConstants.jsonPatPath);
+			JSONObject jsonObject = new JSONObject(new JSONTokener(reader));
+
+			// Get the array of device IDs
+			JSONArray deviceIds = jsonObject.getJSONArray("deviceIds");
+
+			
+			List<Map<String, Object>> data = new ArrayList<>();
+			for (Object deviceId : deviceIds) {
+				System.out.println(deviceId);
+				//data = new ArrayList<>();
+				
+				CodeParser codeInfo=guestCodeRepositories.getLockCodeDetails(deviceId.toString(), LockCodeConstants.token);
+		    	String [] indices=new LockCodeUtils().getLockCodeIndices(codeInfo.getLockCodes().getValue());
+		    	
+		    	String [] codeValue=new LockCodeUtils().getLockCodeLabels(codeInfo.getLockCodes().getValue());
+		    	int columnIndex=0;
+		    	Map<String, Object> rowMap = new HashMap<>();
+		    	rowMap.clear();
+		    	rowMap.put("DeviceId", deviceId.toString());
+		    	for (int i = 0; i < codeValue.length; i++) {
+		    		
+		    		if (codeValue[i].trim().startsWith("code_") && report==0
+							&& !ArrayUtils.contains(LockCodeConstants.mastercodes, codeValue[i].toString().trim())
+							&& !ArrayUtils.contains(LockCodeConstants.staffCodes, codeValue[i].toString().trim())) {
+		    			String code = codeValue[i].trim().split("_")[1].trim();
+		    			String columnName="Code"+columnIndex++;
+		    			rowMap.put(columnName, code);
+		    			System.out.println("inside guest");
+		    		}
+		    		
+		    		
+		    		
+		    		else if (codeValue[i].trim().startsWith("code_") && report==2
+							&& ArrayUtils.contains(LockCodeConstants.mastercodes, codeValue[i].toString().trim())
+							) {
+		    			String code = codeValue[i].trim().split("_")[1].trim();
+		    			String columnName="Code"+columnIndex++;
+		    			rowMap.put(columnName, code);
+		    			System.out.println("inside master");
+		    			
+		    		}
+		    		else {
+		    			String code = codeValue[i].trim().split("_")[1].trim();
+		    			String columnName="Code"+columnIndex++;
+		    			rowMap.put(columnName, code);
+		    			System.out.println("inside staff");
+		    			
+		    		}
+		    		
+		    		
+		    	}
+		    	data.add(rowMap);
+		    	try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		    	
+		    	
+				
+			}
+			String fileName="guest_report";
+			switch(report)
+			{
+			case 0:
+				fileName="guest_report";
+				break;
+			case 1:
+				fileName="staff_report";
+				break;
+			case 2:
+				fileName="master_report";
+				break;
+			}
+			
+			String sheetfilePath = "C:\\Users\\SSC\\" + fileName + ".csv";
+			new CsvUtils().createCsv(sheetfilePath,data);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+}

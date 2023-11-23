@@ -1,0 +1,85 @@
+package com.devicethread.tools;
+
+import com.google.gson.annotations.SerializedName;
+
+public class CodeParser {
+    private CodeLength codeLength;
+    private MaxCodes maxCodes;
+    private MaxCodeLength maxCodeLength;
+    private CodeChanged codeChanged;
+    private Lock lock;
+    private MinCodeLength minCodeLength;
+    private CodeReport codeReport;
+    private ScanCodes scanCodes;
+    public LockCodes lockCodes;
+
+    // Getters and setters (or use Lombok for automatic generation)
+}
+
+class CodeLength {
+    private Integer value;
+
+    // Getter and setter
+}
+
+class MaxCodes {
+    private Integer value;
+    private String timestamp;
+
+    // Getters and setters
+}
+
+class MaxCodeLength {
+    private Integer value;
+
+    // Getter and setter
+}
+
+class CodeChanged {
+    private String value;
+    private Object data; // Change the type based on the actual data type
+    private String timestamp;
+
+    // Getters and setters
+}
+
+class Lock {
+    private String value;
+    private LockData data;
+    private String timestamp;
+
+    // Getters and setters
+}
+
+class LockData {
+    private String method;
+
+    // Getter and setter
+}
+
+class MinCodeLength {
+    private Integer value;
+
+    // Getter and setter
+}
+
+class CodeReport {
+    private Integer value;
+    private String timestamp;
+
+    // Getters and setters
+}
+
+class ScanCodes {
+    private String value;
+    private String timestamp;
+
+    // Getters and setters
+}
+
+class LockCodes {
+    private String value;
+    private String timestamp;
+
+    // Getters and setters
+}

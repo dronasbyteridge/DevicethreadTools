@@ -1,0 +1,86 @@
+package com.devicethread.tools;
+
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
+import org.json.JSONObject;
+
+import com.devicethread.tools.features.models.locks.CodeParser;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+/**
+ * Hello world!
+ *
+ */
+public class Main 
+{
+	String token = "626523db-cbb4-4f3a-87a0-f48a1886cbde";
+    public static void main( String[] args ) {
+
+    	System.out.println("Hello");
+    	new Main().getApi();
+    	
+    }
+    
+    public void getApi()
+    {
+    	String deviceId="df499a5a-c275-4228-860c-2c0747125c24";
+    	 String apiUrl = "https://api.smartthings.com/v1/devices/"+deviceId+"/components/main/capabilities/lockCodes/status";
+    	 HttpClient httpClient = HttpClients.createDefault();
+
+         // Create an HTTP GET request
+         HttpGet getRequest = new HttpGet(apiUrl);
+
+         // Set headers for the request
+         getRequest.setHeader("Authorization","Bearer " + token);
+         getRequest.setHeader(HttpHeaders.ACCEPT, "application/json");
+         getRequest.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+         // Add more headers if needed
+
+         try {
+             // Execute the request and get the response
+             HttpResponse response = httpClient.execute(getRequest);
+
+             // Read the response content
+             BufferedReader reader = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+             String line;
+             StringBuilder responseContent = new StringBuilder();
+
+             while ((line = reader.readLine()) != null) {
+                 responseContent.append(line);
+             }
+
+             // Print the response content
+             System.out.println("API Response:\n" + responseContent.toString());
+
+
+             Gson gson = new Gson();
+
+             // Parse the JSON string into your Java class
+             CodeParser codeInfo = gson.fromJson(responseContent.toString(), CodeParser.class);
+             System.out.println("Max Codes Value: " + codeInfo.getLockCodes().getValue());
+             JSONObject jsonObject2 = new JSONObject(codeInfo.getLockCodes().getValue());
+             for (String key : jsonObject2.keySet()) {
+ 				if (key.matches("\\d+")) {
+
+ 					if (jsonObject2.get(key).toString().contains("code_")) {
+
+ 						System.out.print(" "+jsonObject2.get(key));
+ 					}
+
+ 				}
+ 			}
+            // System.out.println("Lock Value: " + codeInfo.getLock().getValue());
+
+             // Close the BufferedReader
+             reader.close();
+
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
+    }
+}

@@ -1,0 +1,5 @@
+package com.devicethread.tools.features;
+
+public class GuestCodeService {
+
+}

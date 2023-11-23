@@ -1,0 +1,36 @@
+package com.devicethread.tools;
+
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import com.devicethread.tools.features.GuestCodeReport;
+
+
+public class Main 
+{
+
+    public static void main( String[] args ) {
+
+    	//0  generate guest code report
+		//1  generate staff code report
+		//2  generate master code report
+		//new GuestCodeReport().generateGuestCodeReport(1);
+    	
+    	List<Map<String, String[]>> data = new ArrayList<Map<String, String[]>>();
+		String[] codes = {"1009", "6726", "4774", "0662", "7691", "6088"};
+
+		
+		Map<String, String[]> deviceData = new HashMap<String, String[]>();
+		deviceData.put("df499a5a-c275-4228-860c-2c0747125c24", codes);
+		
+		data.add(deviceData);
+		new GuestCodeReport().cleanDevices(data);
+		
+		
+    	
+    }
+    
+}

@@ -1,0 +1,91 @@
+package com.devicethread.tools;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import com.devicethread.tools.features.GuestCodeReport;
+import com.devicethread.tools.features.GuestCodeRepositories;
+import com.devicethread.tools.features.models.locks.CodeParser;
+import com.devicethread.tools.utils.LockCodeConstants;
+import com.devicethread.tools.utils.LockCodeList;
+import com.devicethread.tools.utils.LockCodeUtils;
+
+public class Main {
+
+	public static void main(String[] args) {
+
+		// 0 generate guest code report
+		// 1 generate staff code report
+		// 2 generate master code report
+		// new GuestCodeReport().generateGuestCodeReport(0);
+
+		List<Map<String, String[]>> data = new ArrayList<Map<String, String[]>>();
+		String[] codes = {  "1009",
+				  "6726",
+				  "4774",
+				  "0662",
+				  "7691",
+				  "6088",
+				  "3725",
+				  "2829",
+				  "0824",
+				  "2855",
+				  "6178",
+				  "7812",
+				  "9088",
+				  "2334",
+				  "4306"};
+
+		Map<String, String[]> deviceData = new HashMap<String, String[]>();
+		deviceData.put("df499a5a-c275-4228-860c-2c0747125c24", LockCodeList.d1);
+
+		data.add(deviceData);
+		//new GuestCodeReport().cleanDevices(data);
+		//new Main().createInsertQuery();
+		String [] codesToSet= { "5837",
+				  "2818",
+				  "8240",
+				  "4617",
+				  "3127",
+				  "5145",
+				  "9175",
+				  "7858",
+				  "5616",
+				  "8095",
+				  "5957",
+				  "4893",
+				  "0107",
+				  "0530",
+				  "6544"};
+		new GuestCodeReport().setCodeForDevice(codesToSet , 243);
+
+	}
+
+	public void createInsertQuery() {
+		String deviceIds[] = { "f5fa1ef1-b562-44b9-bb24-9404f070999b" };
+		String staffCodes[] = { "5783", "4853", "2707" };
+		GuestCodeRepositories guestCodeRepositories = new GuestCodeRepositories();
+		for (String deviceId : deviceIds) {
+			System.out.println(deviceId);
+			CodeParser codeInfo = guestCodeRepositories.getLockCodeDetails(deviceId, LockCodeConstants.token);
+			String[] indices = new LockCodeUtils().getLockCodeIndices(codeInfo.getLockCodes().getValue());
+			String[] codeValue = new LockCodeUtils().getLockCodeLabels(codeInfo.getLockCodes().getValue());
+			for (int j = 0; j < codeValue.length; j++) {
+				if (codeValue[j].trim().split("_").length > 1) {
+					String code = codeValue[j].trim().split("_")[1].trim();
+					if (ArrayUtils.contains(staffCodes, code.trim())) {
+
+						System.out.println("Code:" + code + ":index:" + indices[j]);
+
+					}
+				}
+
+			}
+		}
+	}
+
+}

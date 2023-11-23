@@ -1,0 +1,20 @@
+package com.devicethread.tools;
+
+
+import com.devicethread.tools.features.GuestCodeReport;
+
+
+public class Main 
+{
+
+    public static void main( String[] args ) {
+
+    	//0  generate guest code report
+		//1  generate staff code report
+		//2  generate master code report
+		//new GuestCodeReport().generateGuestCodeReport(1);
+		new GuestCodeReport().cleanDevices();
+    	
+    }
+    
+}
